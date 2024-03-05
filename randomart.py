@@ -3,8 +3,8 @@
 # See README.md for documentation and LICENCE for licencing information.
 
 import math
-import random
 from Tkinter import * # Change "Tkinter" to "tkinter" in Python 3
+import secrets
 
 # Utility functions
 
@@ -56,7 +56,7 @@ class VariableY():
 class Constant():
     arity = 0
     def __init__(self):
-        self.c = (random.uniform(0,1), random.uniform(0,1), random.uniform(0,1))
+        self.c = (secrets.SystemRandom().uniform(0,1), secrets.SystemRandom().uniform(0,1), secrets.SystemRandom().uniform(0,1))
     def __repr__(self):
         return 'Constant(%g,%g,%g)' % self.c
     def eval(self,x,y): return self.c
@@ -128,8 +128,8 @@ class Sin():
     arity = 1
     def __init__(self, e):
         self.e = e
-        self.phase = random.uniform(0, math.pi)
-        self.freq = random.uniform(1.0, 6.0)
+        self.phase = secrets.SystemRandom().uniform(0, math.pi)
+        self.freq = secrets.SystemRandom().uniform(1.0, 6.0)
     def __repr__(self):
         return 'Sin(%g + %g * %s)' % (self.phase, self.freq, self.e)
     def eval(self,x,y):
@@ -142,7 +142,7 @@ class Sin():
 class Level():
     arity = 3
     def __init__(self, level, e1, e2):
-        self.treshold = random.uniform(-1.0,1.0)
+        self.treshold = secrets.SystemRandom().uniform(-1.0,1.0)
         self.level = level
         self.e1 = e1
         self.e2 = e2
@@ -185,15 +185,15 @@ def generate(k = 50):
     '''Randonly generate an expession of a given size.'''
     if k <= 0: 
         # We used up available size, generate a leaf of the expression tree
-        op = random.choice(operators0)
+        op = secrets.SystemRandom().choice(operators0)
         return op()
     else:
         # randomly pick an operator whose arity > 0
-        op = random.choice(operators1)
+        op = secrets.SystemRandom().choice(operators1)
         # generate subexpressions
         i = 0 # the amount of available size used up so far
         args = [] # the list of generated subexpression
-        for j in sorted([random.randrange(k) for l in range(op.arity-1)]):
+        for j in sorted([secrets.SystemRandom().randrange(k) for l in range(op.arity-1)]):
             args.append(generate(j - i))
             i = j
         args.append(generate(k - 1 - i))
@@ -216,7 +216,7 @@ class Art():
     def redraw(self):
         if self.draw_alarm: self.canvas.after_cancel(self.draw_alarm)
         self.canvas.delete(ALL)
-        self.art = generate(random.randrange(20,150))
+        self.art = generate(secrets.SystemRandom().randrange(20,150))
         self.d = 64   # current square size
         self.y = 0    # current row
         self.draw()
